@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+	<title>fernlight</title>
+	<link rel="icon" href="favicon.ico" />
+	<script src="/scram/scramjet.all.js"></script>
+	<script src="/baremux/index.js"></script>
+	<link rel="stylesheet" href="index.css" />
+	<script src="register-sw.js" defer></script>
+	<script src="search.js" defer></script>
+	<script src="index.js" defer></script>
+</head>
+<body>
+	<div id="bg"></div>
+	<canvas id="fireflies"></canvas>
+
+	<!-- HOME -->
+	<main id="home">
+		<div class="pill online"><span>online users:</span> <b id="online">1</b></div>
+
+		<button id="drawer-toggle" class="drawer-toggle" title="Tabs">
+			<svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+		</button>
+
+		<div class="center">
+			<h1 class="logo">fern<span>light</span></h1>
+
+			<form id="search-form" class="search">
+				<svg class="search-ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+				<input id="search-input" type="text" autocomplete="off" spellcheck="false" placeholder="search or enter a url" />
+				<button type="submit" class="go" title="Go">
+					<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+				</button>
+			</form>
+			<p id="error" class="error"></p>
+
+			<div class="chips">
+				<button class="chip" data-panel="apps">
+					<svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>
+					apps</button>
+				<button class="chip" data-panel="music">
+					<svg viewBox="0 0 24 24"><path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg>
+					music</button>
+				<button class="chip" data-panel="history">
+					<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>
+					history</button>
+				<button class="chip" data-panel="settings">
+					<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+					settings</button>
+			</div>
+		</div>
+
+		<footer class="foot">
+			<a class="pill" href="credits.html">
+				<svg viewBox="0 0 24 24" class="fill"><path d="M12 21s-7-4.4-9.3-9C1.2 8.9 3 5 6.6 5c2 0 3.4 1.1 4.1 2.3h2.6C14 6.1 15.4 5 17.4 5 21 5 22.8 8.9 21.3 12 19 16.6 12 21 12 21z"/></svg>
+				credits</a>
+			<a class="pill" href="https://github.com/MercuryWorkshop/scramjet" target="_blank" rel="noopener">
+				<svg viewBox="0 0 24 24"><path d="M9 19c-4 1.5-4-2-6-2.5M15 22v-3.9a3.4 3.4 0 0 0-1-2.6c3.1-.4 6.4-1.6 6.4-7A5.4 5.4 0 0 0 19 4.8 5 5 0 0 0 18.9 1S17.7.7 15 2.5a13.4 13.4 0 0 0-7 0C5.3.7 4.1 1 4.1 1A5 5 0 0 0 4 4.8a5.4 5.4 0 0 0-1.5 3.7c0 5.4 3.3 6.6 6.4 7a3.4 3.4 0 0 0-1 2.6V22"/></svg>
+				scramjet</a>
+		</footer>
+	</main>
+
+	<!-- PANELS -->
+	<div id="overlay" class="overlay hidden">
+		<div class="panel glass">
+			<div class="panel-head">
+				<h2 id="panel-title">apps</h2>
+				<button class="icon-btn" id="panel-close" title="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+			</div>
+			<div id="panel-body"></div>
+		</div>
+	</div>
+
+	<!-- TABS DRAWER -->
+	<aside id="drawer" class="drawer glass">
+		<div class="panel-head">
+			<h2>tabs</h2>
+			<button class="icon-btn" id="drawer-close"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+		</div>
+		<div id="tab-list"></div>
+		<button class="chip wide" id="drawer-new"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>new tab</button>
+	</aside>
+
+	<!-- BROWSER -->
+	<section id="browser" class="hidden">
+		<div class="toolbar glass">
+			<button class="icon-btn" id="b-tabs" title="Tabs"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 4v16"/></svg><i id="tab-count">1</i></button>
+			<button class="icon-btn" id="b-back" title="Back"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+			<button class="icon-btn" id="b-fwd" title="Forward"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+			<button class="icon-btn" id="b-reload" title="Reload"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></svg></button>
+			<form id="addr-form" class="addr">
+				<input id="addr" type="text" autocomplete="off" spellcheck="false" />
+			</form>
+			<button class="icon-btn" id="b-full" title="Fullscreen"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+			<button class="icon-btn" id="b-home" title="Home"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg></button>
+		</div>
+		<div id="frames"></div>
+	</section>
+</body>
+</html>
