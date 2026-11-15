@@ -7,10 +7,10 @@
 	<link rel="icon" href="favicon.ico" />
 	<script src="/scram/scramjet.all.js"></script>
 	<script src="/baremux/index.js"></script>
-	<link rel="stylesheet" href="index.css" />
-	<script src="register-sw.js" defer></script>
-	<script src="search.js" defer></script>
-	<script src="index.js" defer></script>
+	<link rel="stylesheet" href="index.css?v=2" />
+	<script src="register-sw.js?v=2" defer></script>
+	<script src="search.js?v=2" defer></script>
+	<script src="index.js?v=2" defer></script>
 </head>
 <body>
 	<div id="bg"></div>
@@ -27,9 +27,9 @@
 		<div class="center">
 			<h1 class="logo">fern<span>light</span></h1>
 
-			<form id="search-form" class="search">
+			<form id="search-form" class="search" action="javascript:void(0)" onsubmit="return false" novalidate>
 				<svg class="search-ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
-				<input id="search-input" type="text" autocomplete="off" spellcheck="false" placeholder="search or enter a url" />
+				<input id="search-input" type="search" enterkeyhint="go" autocomplete="off" spellcheck="false" placeholder="search or enter a url" />
 				<button type="submit" class="go" title="Go">
 					<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
 				</button>
@@ -90,8 +90,8 @@
 			<button class="icon-btn" id="b-back" title="Back"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
 			<button class="icon-btn" id="b-fwd" title="Forward"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
 			<button class="icon-btn" id="b-reload" title="Reload"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></svg></button>
-			<form id="addr-form" class="addr">
-				<input id="addr" type="text" autocomplete="off" spellcheck="false" />
+			<form id="addr-form" class="addr" action="javascript:void(0)" onsubmit="return false" novalidate>
+				<input id="addr" type="text" inputmode="url" enterkeyhint="go" autocomplete="off" spellcheck="false" />
 			</form>
 			<button class="icon-btn" id="b-full" title="Fullscreen"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
 			<button class="icon-btn" id="b-home" title="Home"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg></button>

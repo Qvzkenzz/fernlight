@@ -16,28 +16,42 @@ const settings = Object.assign({ engine: "google", fireflies: true, saveHistory:
 const saveSettings = () => store.set("settings", settings);
 let history = store.get("history", []);
 
-/* ---------------- proxy setup ---------------- */
-const { ScramjetController } = $scramjetLoadController();
-const scramjet = new ScramjetController({
-	files: {
-		wasm: "/scram/scramjet.wasm.wasm",
-		all: "/scram/scramjet.all.js",
-		sync: "/scram/scramjet.sync.js",
-	},
-});
-scramjet.init();
-const connection = new BareMux.BareMuxConnection("/baremux/worker.js");
+/* ---------------- proxy setup (lazy, so the UI always works) ---------------- */
+let scramjet = null;
+let connection = null;
 let ready = false;
 
 async function ensureReady() {
 	if (ready) return;
+	if (!window.isSecureContext) throw new Error("open the site with https:// at the start");
+	if (!("serviceWorker" in navigator)) throw new Error("this browser doesn't support service workers - try updating iPadOS/Safari, or turn off Private Browsing");
+	if (!scramjet) {
+		const { ScramjetController } = $scramjetLoadController();
+		scramjet = new ScramjetController({
+			files: {
+				wasm: "/scram/scramjet.wasm.wasm",
+				all: "/scram/scramjet.all.js",
+				sync: "/scram/scramjet.sync.js",
+			},
+		});
+		await scramjet.init();
+		connection = new BareMux.BareMuxConnection("/baremux/worker.js");
+	}
 	await registerSW();
+	await navigator.serviceWorker.ready;
 	const wispUrl = (location.protocol === "https:" ? "wss" : "ws") + "://" + location.host + "/wisp/";
 	if ((await connection.getTransport()) !== "/libcurl/index.mjs") {
 		await connection.setTransport("/libcurl/index.mjs", [{ websocket: wispUrl }]);
 	}
 	ready = true;
 }
+
+function showError(msg) {
+	$("error").textContent = msg;
+	showHome();
+}
+window.addEventListener("error", (e) => { const el = $("error"); if (el) el.textContent = "error: " + e.message; });
+window.addEventListener("unhandledrejection", (e) => { const el = $("error"); if (el) el.textContent = "error: " + (e.reason?.message || e.reason); });
 
 /* ---------------- tabs ---------------- */
 let tabs = [];
@@ -48,15 +62,16 @@ function hostOf(u) { try { return new URL(u).hostname.replace(/^www\./, ""); } c
 
 async function openUrl(input, newTab = false) {
 	const url = search(input.trim(), ENGINES[settings.engine]);
+	$("error").textContent = "loading…";
 	try {
 		await ensureReady();
+		if (!active || newTab) createTab(url);
+		else active.frame.go(url);
 	} catch (err) {
-		$("error").textContent = "Couldn't start the proxy: " + err.message;
+		showError("couldn't open it: " + (err?.message || err));
 		return;
 	}
 	$("error").textContent = "";
-	if (!active || newTab) createTab(url);
-	else active.frame.go(url);
 	showBrowser();
 }
 
@@ -132,7 +147,7 @@ function showBrowser() { $("browser").classList.remove("hidden"); $("home").clas
 function showHome() {
 	$("browser").classList.add("hidden");
 	$("home").classList.remove("hidden");
-	if (document.fullscreenElement) document.exitFullscreen();
+	try { if (document.fullscreenElement) document.exitFullscreen(); } catch {}
 	setTimeout(() => $("search-input").focus(), 50);
 }
 function openDrawer() { renderTabs(); $("drawer").classList.add("open"); }
@@ -235,7 +250,9 @@ $("b-fwd").onclick = () => active?.frame.forward();
 $("b-reload").onclick = () => active?.frame.reload();
 $("b-home").onclick = showHome;
 $("b-tabs").onclick = openDrawer;
-$("b-full").onclick = () => document.fullscreenElement ? document.exitFullscreen() : $("browser").requestFullscreen?.();
+$("b-full").onclick = () => {
+	try { document.fullscreenElement ? document.exitFullscreen() : $("browser").requestFullscreen?.(); } catch {}
+};
 $("drawer-toggle").onclick = openDrawer;
 $("drawer-close").onclick = closeDrawer;
 $("drawer-new").onclick = () => { closeDrawer(); showHome(); };
